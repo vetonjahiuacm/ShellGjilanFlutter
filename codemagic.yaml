@@ -1,6 +1,6 @@
 ﻿workflows:
-  shell-gjilan-ios-unsigned:
-    name: Shell Gjilan iOS IPA
+  shell-gjilan-ipa:
+    name: Shell Gjilan IPA
     instance_type: mac_mini_m2
     max_build_duration: 60
 
@@ -14,25 +14,24 @@
         script: |
           flutter pub get
 
-      - name: Install CocoaPods
+      - name: CocoaPods
         script: |
           cd ios
           pod install
           cd ..
 
-      - name: Build iOS Release without signing
+      - name: Build iOS Release unsigned
         script: |
           flutter build ios --release --no-codesign
 
-      - name: Create unsigned IPA
+      - name: Create IPA
         script: |
-          rm -rf build/ios/unsigned
-          mkdir -p build/ios/unsigned/Payload
-          cp -R build/ios/iphoneos/Runner.app build/ios/unsigned/Payload/
-          cd build/ios/unsigned
+          rm -rf build/ios/ipa_unsigned
+          mkdir -p build/ios/ipa_unsigned/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ios/ipa_unsigned/Payload/
+          cd build/ios/ipa_unsigned
           /usr/bin/zip -qry ShellGjilan.ipa Payload
 
     artifacts:
-      - build/ios/unsigned/ShellGjilan.ipa
-      - build/ios/iphoneos/Runner.app
+      - build/ios/ipa_unsigned/ShellGjilan.ipa
       - /tmp/xcodebuild_logs/*.log
